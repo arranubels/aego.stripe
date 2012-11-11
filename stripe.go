@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+  "appengine/urlfetch"
 	"net/url"
 	"os"
 	"strings"
@@ -92,7 +93,7 @@ func query(method, path string, values url.Values, v interface{}) error {
 	}
 
 	// submit the http request
-	r, err := http.DefaultClient.Do(req)
+	r, err := urlfetch.Client.Do(req) //http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
