@@ -1,13 +1,13 @@
 package stripe
 
 import (
+	"appengine/urlfetch"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-  "appengine/urlfetch"
 	"net/url"
 	"os"
 	"strings"

@@ -25,7 +25,7 @@ type TokenClient struct{}
 // TokenParams encapsulates options for creating a new Card Token.
 type TokenParams struct {
 	//Currency string REMOVED! no longer part of the API
-	Card     *CardParams
+	Card *CardParams
 }
 
 // Creates a single use token that wraps the details of a credit card.
