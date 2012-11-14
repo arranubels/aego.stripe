@@ -70,7 +70,7 @@ func query(method, path string, values url.Values, v interface{},
 
 	// set the endpoint for the specific API
 	endpoint.Path = path
-	endpoint.User = url.User(_key)
+	//endpoint.User = url.User(_key)
 
 	// if this is an http GET, add the url.Values to the endpoint
 	if method == "GET" {
@@ -94,8 +94,10 @@ func query(method, path string, values url.Values, v interface{},
 	if err != nil {
 		return err
 	}
+  req.SetBasicAuth(_key, "")
 
 	// submit the http request
+  fmt.Println(req)
 	r, err := urlfetch.Client(aectx).Do(req) //http.DefaultClient.Do(req)
 	if err != nil {
 		return err

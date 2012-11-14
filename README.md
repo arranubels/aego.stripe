@@ -9,6 +9,8 @@ go get https://github.com/bradrydzewski/go.stripe
 
 ## Examples
 
+*Note*: see Charge for example of different instantiation due to changes for AppEngine.
+
 In order to use the `go.stripe` API you will need to create an account with
 stripe.com, and obtain an Secret Key. You must set this key by invoking the
 following function:
@@ -58,7 +60,9 @@ params := stripe.ChargeParams{
 	},
 }
 
-charge, err := stripe.Charges.Create(&params)
+charger := new(stripe.ChargeClient)
+charger.SetContext(ctx)
+charge, err := charger.Create(&params)
 ```
 
 Note: the amount charged is $4.00, but is specified in cents (400 cents == $4)
