@@ -94,10 +94,9 @@ func query(method, path string, values url.Values, v interface{},
 	if err != nil {
 		return err
 	}
-  req.SetBasicAuth(_key, "")
+	req.SetBasicAuth(_key, "")
 
 	// submit the http request
-  fmt.Println(req)
 	r, err := urlfetch.Client(aectx).Do(req) //http.DefaultClient.Do(req)
 	if err != nil {
 		return err
