@@ -1,10 +1,11 @@
-# go.stripe
-[![](https://drone.io/drone/go.stripe/status.png)](https://drone.io/drone/go.stripe/latest)
+# aego.stripe
+
+[go.stripe](https://github.com/drone/go.stripe) just hacked up to run on Google AppEngine.
 
 a simple Credit Card processing library for Go using the Stripe API
 
 ```sh
-go get https://github.com/bradrydzewski/go.stripe
+go get https://github.com/jda/aego.stripe
 ```
 
 ## Examples
@@ -69,14 +70,14 @@ Note: the amount charged is $4.00, but is specified in cents (400 cents == $4)
 
 ## Documentation
 
-* [Customers](https://github.com/bradrydzewski/go.stripe/wiki/Customers)
-* [Charges](https://github.com/bradrydzewski/go.stripe/wiki/Charges)
-* [Coupons](https://github.com/bradrydzewski/go.stripe/wiki/Coupons)
-* [Invoices](https://github.com/bradrydzewski/go.stripe/wiki/Invoices)
-* [Invoice Items](https://github.com/bradrydzewski/go.stripe/wiki/Invoice-Items)
-* [Plans](https://github.com/bradrydzewski/go.stripe/wiki/Plans)
-* [Subscriptions](https://github.com/bradrydzewski/go.stripe/wiki/Subscriptions)
-* [Tokens](https://github.com/bradrydzewski/go.stripe/wiki/Tokens)
+* [Customers](https://github.com/jda/aego.stripe/wiki/Customers)
+* [Charges](https://github.com/jda/aego.stripe/wiki/Charges)
+* [Coupons](https://github.com/jda/aego.stripe/wiki/Coupons)
+* [Invoices](https://github.com/jda/aego.stripe/wiki/Invoices)
+* [Invoice Items](https://github.com/jda/aego.stripe/wiki/Invoice-Items)
+* [Plans](https://github.com/jda/aego.stripe/wiki/Plans)
+* [Subscriptions](https://github.com/jda/aego.stripe/wiki/Subscriptions)
+* [Tokens](https://github.com/jda/aego.stripe/wiki/Tokens)
 
 You can also have a look at the [Godocs](http://gopkgdoc.appspot.com/pkg/github.com/bradrydzewski/go.stripe).
 
