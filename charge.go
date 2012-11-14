@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -74,7 +75,14 @@ type ChargeParams struct {
 
 // ChargeClient encapsulates operations for creating, updating, deleting and
 // querying charges using the Stripe REST API.
-type ChargeClient struct{}
+type ChargeClient struct {
+	aectx appengine.Context
+}
+
+// Set AppEngine Context
+func (self *ChargeClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
 
 // Creates a new credit card Charge.
 //
@@ -97,7 +105,7 @@ func (self *ChargeClient) Create(params *ChargeParams) (*Charge, error) {
 		values.Add("customer", params.Customer)
 	}
 
-	err := query("POST", "/v1/charges", values, &charge)
+	err := query("POST", "/v1/charges", values, &charge, self.aectx)
 	return &charge, err
 }
 
@@ -107,7 +115,7 @@ func (self *ChargeClient) Create(params *ChargeParams) (*Charge, error) {
 func (self *ChargeClient) Retrieve(id string) (*Charge, error) {
 	charge := Charge{}
 	path := "/v1/charges/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &charge)
+	err := query("GET", path, nil, &charge, self.aectx)
 	return &charge, err
 }
 
@@ -118,7 +126,7 @@ func (self *ChargeClient) Refund(id string) (*Charge, error) {
 	values := url.Values{}
 	charge := Charge{}
 	path := "/v1/charges/" + url.QueryEscape(id) + "/refund"
-	err := query("POST", path, values, &charge)
+	err := query("POST", path, values, &charge, self.aectx)
 	return &charge, err
 }
 
@@ -131,7 +139,7 @@ func (self *ChargeClient) RefundAmount(id string, amt int64) (*Charge, error) {
 	}
 	charge := Charge{}
 	path := "/v1/charges/" + url.QueryEscape(id) + "/refund"
-	err := query("POST", path, values, &charge)
+	err := query("POST", path, values, &charge, self.aectx)
 	return &charge, err
 }
 
@@ -180,7 +188,7 @@ func (self *ChargeClient) list(id string, count int, offset int) ([]*Charge, err
 		values.Add("customer", id)
 	}
 
-	err := query("GET", "/v1/charges", values, &resp)
+	err := query("GET", "/v1/charges", values, &resp, self.aectx)
 	if err != nil {
 		return nil, err
 	}

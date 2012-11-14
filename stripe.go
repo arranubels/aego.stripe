@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"appengine/urlfetch"
 	"encoding/json"
 	"errors"
@@ -58,7 +59,9 @@ func SetKeyEnv() (err error) {
 
 // query submits an http.Request and parses the JSON-encoded http.Response,
 // storing the result in the value pointed to by v.
-func query(method, path string, values url.Values, v interface{}) error {
+func query(method, path string, values url.Values, v interface{},
+	aectx appengine.Context) error {
+
 	// parse the stripe URL
 	endpoint, err := url.Parse(_url)
 	if err != nil {
@@ -93,7 +96,7 @@ func query(method, path string, values url.Values, v interface{}) error {
 	}
 
 	// submit the http request
-	r, err := urlfetch.Client.Do(req) //http.DefaultClient.Do(req)
+	r, err := urlfetch.Client(aectx).Do(req) //http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}

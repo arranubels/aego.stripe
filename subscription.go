@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -33,7 +34,9 @@ type Subscription struct {
 
 // SubscriptionClient encapsulates operations for updating and canceling
 // customer subscriptions using the Stripe REST API.
-type SubscriptionClient struct{}
+type SubscriptionClient struct {
+	aectx appengine.Context
+}
 
 // SubscriptionParams encapsulates options for updating a Customer's
 // subscription.
@@ -87,7 +90,7 @@ func (self *SubscriptionClient) Update(customerId string, params *SubscriptionPa
 
 	s := Subscription{}
 	path := "/v1/customers/" + url.QueryEscape(customerId) + "/subscription"
-	err := query("POST", path, values, &s)
+	err := query("POST", path, values, &s, self.aectx)
 	return &s, err
 }
 
@@ -98,6 +101,6 @@ func (self *SubscriptionClient) Update(customerId string, params *SubscriptionPa
 func (self *SubscriptionClient) Cancel(customerId string) (*Subscription, error) {
 	s := Subscription{}
 	path := "/v1/customers/" + url.QueryEscape(customerId) + "/subscription"
-	err := query("DELETE", path, nil, &s)
+	err := query("DELETE", path, nil, &s, self.aectx)
 	return &s, err
 }

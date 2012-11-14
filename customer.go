@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -63,7 +64,9 @@ type CustomerParams struct {
 
 // CustomerClient encapsulates operations for creating, updating, deleting and
 // querying customers using the Stripe REST API.
-type CustomerClient struct{}
+type CustomerClient struct {
+	aectx appengine.Context
+}
 
 // Creates a new Customer.
 //
@@ -73,7 +76,7 @@ func (self *CustomerClient) Create(c *CustomerParams) (*Customer, error) {
 	values := url.Values{}
 	appendCustomerParamsToValues(c, &values)
 
-	err := query("POST", "/v1/customers", values, &customer)
+	err := query("POST", "/v1/customers", values, &customer, self.aectx)
 	return &customer, err
 }
 
@@ -83,7 +86,7 @@ func (self *CustomerClient) Create(c *CustomerParams) (*Customer, error) {
 func (self *CustomerClient) Retrieve(id string) (*Customer, error) {
 	customer := Customer{}
 	path := "/v1/customers/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &customer)
+	err := query("GET", path, nil, &customer, self.aectx)
 	return &customer, err
 }
 
@@ -95,7 +98,7 @@ func (self *CustomerClient) Update(id string, c *CustomerParams) (*Customer, err
 	values := url.Values{}
 	appendCustomerParamsToValues(c, &values)
 
-	err := query("POST", "/v1/customers/"+url.QueryEscape(id), values, &customer)
+	err := query("POST", "/v1/customers/"+url.QueryEscape(id), values, &customer, self.aectx)
 	return &customer, err
 }
 
@@ -105,7 +108,7 @@ func (self *CustomerClient) Update(id string, c *CustomerParams) (*Customer, err
 func (self *CustomerClient) Delete(id string) (bool, error) {
 	resp := DeleteResp{}
 	path := "/v1/customers/" + url.QueryEscape(id)
-	if err := query("DELETE", path, nil, &resp); err != nil {
+	if err := query("DELETE", path, nil, &resp, self.aectx); err != nil {
 		return false, err
 	}
 	return resp.Deleted, nil
@@ -133,7 +136,7 @@ func (self *CustomerClient) ListN(count int, offset int) ([]*Customer, error) {
 		"offset": {strconv.Itoa(offset)},
 	}
 
-	err := query("GET", "/v1/customers", values, &resp)
+	err := query("GET", "/v1/customers", values, &resp, self.aectx)
 	if err != nil {
 		return nil, err
 	}

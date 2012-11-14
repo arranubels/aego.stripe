@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -52,7 +53,9 @@ type Period struct {
 
 // InvoiceClient encapsulates operations for querying invoices using the Stripe
 // REST API.
-type InvoiceClient struct{}
+type InvoiceClient struct {
+	aectx appengine.Context
+}
 
 // Retrieves the invoice with the given ID.
 //
@@ -60,7 +63,7 @@ type InvoiceClient struct{}
 func (self *InvoiceClient) Retrieve(id string) (*Invoice, error) {
 	invoice := Invoice{}
 	path := "/v1/invoices/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &invoice)
+	err := query("GET", path, nil, &invoice, self.aectx)
 	return &invoice, err
 }
 
@@ -70,7 +73,7 @@ func (self *InvoiceClient) Retrieve(id string) (*Invoice, error) {
 func (self *InvoiceClient) RetrieveCustomer(cid string) (*Invoice, error) {
 	invoice := Invoice{}
 	values := url.Values{"customer": {cid}}
-	err := query("GET", "/v1/invoices/upcoming", values, &invoice)
+	err := query("GET", "/v1/invoices/upcoming", values, &invoice, self.aectx)
 	return &invoice, err
 }
 
@@ -119,7 +122,7 @@ func (self *InvoiceClient) list(id string, count int, offset int) ([]*Invoice, e
 		values.Add("customer", id)
 	}
 
-	err := query("GET", "/v1/invoices", values, &resp)
+	err := query("GET", "/v1/invoices", values, &resp, self.aectx)
 	if err != nil {
 		return nil, err
 	}

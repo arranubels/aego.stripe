@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 )
 
@@ -20,7 +21,9 @@ type Token struct {
 
 // TokenClient encapsulates operations for creating and querying tokens using
 // the Stripe REST API.
-type TokenClient struct{}
+type TokenClient struct {
+	aectx appengine.Context
+}
 
 // TokenParams encapsulates options for creating a new Card Token.
 type TokenParams struct {
@@ -39,7 +42,7 @@ func (self *TokenClient) Create(params *TokenParams) (*Token, error) {
 	values := url.Values{} // REMOVED "currency": {params.Currency}}
 	appendCardParamsToValues(params.Card, &values)
 
-	err := query("POST", "/v1/tokens", values, &token)
+	err := query("POST", "/v1/tokens", values, &token, self.aectx)
 	return &token, err
 }
 
@@ -49,6 +52,6 @@ func (self *TokenClient) Create(params *TokenParams) (*Token, error) {
 func (self *TokenClient) Retrieve(id string) (*Token, error) {
 	token := Token{}
 	path := "/v1/tokens/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &token)
+	err := query("GET", path, nil, &token, self.aectx)
 	return &token, err
 }

@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -46,7 +47,9 @@ type InvoiceItemParams struct {
 
 // InvoiceItemClient encapsulates operations for creating, updating, deleting
 // and querying invoices using the Stripe REST API.
-type InvoiceItemClient struct{}
+type InvoiceItemClient struct {
+	aectx appengine.Context
+}
 
 // Create adds an arbitrary charge or credit to the customer's upcoming invoice.
 //
@@ -67,7 +70,7 @@ func (self *InvoiceItemClient) Create(params *InvoiceItemParams) (*InvoiceItem, 
 		values.Add("invoice", params.Invoice)
 	}
 
-	err := query("POST", "/v1/invoiceitems", values, &item)
+	err := query("POST", "/v1/invoiceitems", values, &item, self.aectx)
 	return &item, err
 }
 
@@ -77,7 +80,7 @@ func (self *InvoiceItemClient) Create(params *InvoiceItemParams) (*InvoiceItem, 
 func (self *InvoiceItemClient) Retrieve(id string) (*InvoiceItem, error) {
 	item := InvoiceItem{}
 	path := "/v1/invoiceitems/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &item)
+	err := query("GET", path, nil, &item, self.aectx)
 	return &item, err
 }
 
@@ -96,7 +99,7 @@ func (self *InvoiceItemClient) Update(id string, params *InvoiceItemParams) (*In
 		values.Add("invoice", strconv.FormatInt(params.Amount, 10))
 	}
 
-	err := query("POST", "/v1/invoiceitems/"+url.QueryEscape(id), values, &item)
+	err := query("POST", "/v1/invoiceitems/"+url.QueryEscape(id), values, &item, self.aectx)
 	return &item, err
 }
 
@@ -106,7 +109,7 @@ func (self *InvoiceItemClient) Update(id string, params *InvoiceItemParams) (*In
 func (self *InvoiceItemClient) Delete(id string) (bool, error) {
 	resp := DeleteResp{}
 	path := "/v1/invoiceitems/" + url.QueryEscape(id)
-	if err := query("DELETE", path, nil, &resp); err != nil {
+	if err := query("DELETE", path, nil, &resp, self.aectx); err != nil {
 		return false, err
 	}
 	return resp.Deleted, nil
@@ -158,7 +161,7 @@ func (self *InvoiceItemClient) list(id string, count int, offset int) ([]*Invoic
 		values.Add("customer", id)
 	}
 
-	err := query("GET", "/v1/invoiceitems", values, &resp)
+	err := query("GET", "/v1/invoiceitems", values, &resp, self.aectx)
 	if err != nil {
 		return nil, err
 	}

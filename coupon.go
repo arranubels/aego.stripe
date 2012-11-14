@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"appengine"
 	"net/url"
 	"strconv"
 )
@@ -28,7 +29,9 @@ type Coupon struct {
 
 // CouponClient encapsulates operations for creating, updating, deleting and
 // querying coupons using the Stripe REST API.
-type CouponClient struct{}
+type CouponClient struct {
+	aectx appengine.Context
+}
 
 // CouponParams encapsulates options for creating a new Coupon.
 type CouponParams struct {
@@ -88,7 +91,7 @@ func (self *CouponClient) Create(params *CouponParams) (*Coupon, error) {
 	if params.RedeemBy != 0 {
 		values.Add("redeem_by", strconv.FormatInt(params.RedeemBy, 10))
 	}
-	err := query("POST", "/v1/coupons", values, &coupon)
+	err := query("POST", "/v1/coupons", values, &coupon, self.aectx)
 	return &coupon, err
 }
 
@@ -98,7 +101,7 @@ func (self *CouponClient) Create(params *CouponParams) (*Coupon, error) {
 func (self *CouponClient) Retrieve(id string) (*Coupon, error) {
 	coupon := Coupon{}
 	path := "/v1/coupons/" + url.QueryEscape(id)
-	err := query("GET", path, nil, &coupon)
+	err := query("GET", path, nil, &coupon, self.aectx)
 	return &coupon, err
 }
 
@@ -108,7 +111,7 @@ func (self *CouponClient) Retrieve(id string) (*Coupon, error) {
 func (self *CouponClient) Delete(id string) (bool, error) {
 	resp := DeleteResp{}
 	path := "/v1/coupons/" + url.QueryEscape(id)
-	if err := query("DELETE", path, nil, &resp); err != nil {
+	if err := query("DELETE", path, nil, &resp, self.aectx); err != nil {
 		return false, err
 	}
 	return resp.Deleted, nil
@@ -136,7 +139,7 @@ func (self *CouponClient) ListN(count int, offset int) ([]*Coupon, error) {
 		"offset": {strconv.Itoa(offset)},
 	}
 
-	err := query("GET", "/v1/coupons", values, &resp)
+	err := query("GET", "/v1/coupons", values, &resp, self.aectx)
 	if err != nil {
 		return nil, err
 	}
