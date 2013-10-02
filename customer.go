@@ -68,6 +68,11 @@ type CustomerClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *CustomerClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // Creates a new Customer.
 //
 // see https://stripe.com/docs/api#create_customer

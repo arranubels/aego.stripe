@@ -33,6 +33,11 @@ type PlanClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *PlanClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // PlanParams encapsulates options for creating a new Plan.
 type PlanParams struct {
 	// Unique string of your choice that will be used to identify this plan
