@@ -57,6 +57,11 @@ type InvoiceClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *InvoiceClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // Retrieves the invoice with the given ID.
 //
 // see https://stripe.com/docs/api#retrieve_invoice
