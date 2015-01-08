@@ -1,8 +1,6 @@
 package stripe
 
 import (
-	"appengine"
-	"appengine/urlfetch"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,6 +10,10 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
+
+	"appengine"
+	"appengine/urlfetch"
 )
 
 // enable logging to print the request and reponses to stdout
@@ -97,7 +99,12 @@ func query(method, path string, values url.Values, v interface{},
 	req.SetBasicAuth(_key, "")
 
 	// submit the http request
-	r, err := urlfetch.Client(aectx).Do(req) //http.DefaultClient.Do(req)
+	client := urlfetch.Client(aectx)
+	client.Transport = &urlfetch.Transport{
+		Context:  aectx,
+		Deadline: 30 * time.Second,
+	}
+	r, err := client.Do(req) //http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
