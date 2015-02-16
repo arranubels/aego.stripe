@@ -1,6 +1,7 @@
 package stripe
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -77,8 +78,8 @@ func TestCreatePlan(t *testing.T) {
 	_, err = Plans.Create(&p3)
 	if err == nil {
 		t.Error("Expected non-null Error when using an Invalid Currency.")
-	} else if err.Error() != "Invalid currency: XXX." {
-		t.Errorf("Expected %s, got %s", "Invalid currency: XXX.", err.Error())
+	} else if strings.HasPrefix(err.Error(), "Invalid currency: xxx.") == false {
+		t.Errorf("Expected %s, got %s", "Invalid currency: xxx.", err.Error())
 	}
 }
 
@@ -161,8 +162,8 @@ func TestListPlan(t *testing.T) {
 		t.Errorf("Expected Plan List, got Error %s", err.Error())
 	}
 
-	// since we added 2 dummy plans, we expect the array to be a size of 2 
+	// since we added 2 dummy plans, we expect the array to be a size of 2
 	if len(plans) != 2 {
-		t.Errorf("Expected 2 Plans, got %s", len(plans))
+		t.Errorf("Expected 2 Plans, got %d", len(plans))
 	}
 }
