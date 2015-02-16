@@ -30,6 +30,7 @@ type Subscription struct {
 	TrialEnd           Int64  `json:"trial_end"`
 	CanceledAt         Int64  `json:"canceled_at"`
 	CancelAtPeriodEnd  bool   `json:"cancel_at_period_end"`
+	Quantity           int64  `json"quantity"`
 }
 
 // SubscriptionClient encapsulates operations for updating and canceling
@@ -68,6 +69,9 @@ type SubscriptionParams struct {
 
 	// (Optional) A new card Token to attach to the customer.
 	Token string
+
+	// (Optional) The quantity you'd like to apply to the subscription you're creating.
+	Quantity int64
 }
 
 // Subscribes a customer to a new plan.
@@ -86,6 +90,9 @@ func (self *SubscriptionClient) Update(customerId string, params *SubscriptionPa
 	if params.TrialEnd != 0 {
 		values.Add("trial_end", strconv.FormatInt(params.TrialEnd, 10))
 	}
+	if params.Quantity != 0 {
+		values.Add("quantity", strconv.FormatInt(params.Quantity, 10))
+	}
 	// attach a new card, if requested
 	if len(params.Token) != 0 {
 		values.Add("card", params.Token)
@@ -99,13 +106,26 @@ func (self *SubscriptionClient) Update(customerId string, params *SubscriptionPa
 	return &s, err
 }
 
-// Cancels the customer's subscription if it exists.
-// BUG: Cancel Subscription does not take at_period_end into account
+// Cancels the customer's subscription if it exists.  It cancels the
+// subscription immediately.
 //
 // see https://stripe.com/docs/api#cancel_subscription
 func (self *SubscriptionClient) Cancel(customerId string) (*Subscription, error) {
 	s := Subscription{}
 	path := "/v1/customers/" + url.QueryEscape(customerId) + "/subscription"
 	err := query("DELETE", path, nil, &s, self.aectx)
+	return &s, err
+}
+
+// Cancels the customer's subscription at the end of the billing period.
+//
+// see https://stripe.com/docs/api#cancel_subscription
+func (self *SubscriptionClient) CancelAtPeriodEnd(customerId string) (*Subscription, error) {
+	values := url.Values{}
+	values.Add("at_period_end", "true")
+
+	s := Subscription{}
+	path := "/v1/customers/" + url.QueryEscape(customerId) + "/subscription"
+	err := query("DELETE", path, values, &s, self.aectx)
 	return &s, err
 }

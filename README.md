@@ -79,7 +79,7 @@ Note: the amount charged is $4.00, but is specified in cents (400 cents == $4)
 * [Subscriptions](https://github.com/jda/aego.stripe/wiki/Subscriptions)
 * [Tokens](https://github.com/jda/aego.stripe/wiki/Tokens)
 
-You can also have a look at the [Godocs](http://gopkgdoc.appspot.com/pkg/github.com/bradrydzewski/go.stripe).
+You can also have a look at the [Godocs](http://gopkgdoc.appspot.com/pkg/github.com/drone/go.stripe).
 
 ## Unit Tests
 
