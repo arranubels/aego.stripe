@@ -38,6 +38,11 @@ type SubscriptionClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *SubscriptionClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // SubscriptionParams encapsulates options for updating a Customer's
 // subscription.
 type SubscriptionParams struct {
