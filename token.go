@@ -25,6 +25,11 @@ type TokenClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *TokenClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // TokenParams encapsulates options for creating a new Card Token.
 type TokenParams struct {
 	//Currency string REMOVED! no longer part of the API
