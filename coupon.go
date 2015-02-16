@@ -33,6 +33,11 @@ type CouponClient struct {
 	aectx appengine.Context
 }
 
+// Set AppEngine Context
+func (self *CouponClient) SetContext(ctx appengine.Context) {
+	self.aectx = ctx
+}
+
 // CouponParams encapsulates options for creating a new Coupon.
 type CouponParams struct {
 	// (Optional) Unique string of your choice that will be used to identify
